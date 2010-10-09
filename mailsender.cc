@@ -1,3 +1,10 @@
+// mailsender.cc
+
+// MIT License
+// Copyright 2010 Russell Miller
+// Please see included license information or visit
+// http://opensource.org/licenses/mit-license.php
+
 #include <string>
 
 using namespace std;
