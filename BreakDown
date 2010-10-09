@@ -1,0 +1,19 @@
+Work Breakdown Structure v0.0
+-------------------------------
+
+1- Read Beej guide - 1.5 hrs
+
+2- Read Man pages - 1.5 hours
+
+3- Design Doc - Set up Structure of Classes and Heirarchy - 1 hour
+
+4- Design Doc - Pseudo code - 2 hours
+
+5- Design the system calls for sockets etc - 2 hours 
+        --this will need adjustment as i complete step 1 and 2
+
+6- Design wrapper functions and other classes - 1 hour
+
+7- Develop test cases and typescript them - 1 hour
+
+8- Double check all requirements, inspect code - 1 hour
