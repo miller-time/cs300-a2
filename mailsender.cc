@@ -2,23 +2,12 @@
 // Please see included license information or visit
 // http://opensource.org/licenses/mit-license.php
 
-// sendit.cc
+// mailsender.cc
 // This is the class that will send the email message.
 // $Header$
 
+#include <string>
 #include "mailsender.hh"
-#include "sendit.hh"
 
-SendIt::SendIt(string &filename):MailSender(filename)
-{
-}
-
-int SendIt::send(string &host_to,
-		 string &envelope_from,
-		 string &envelope_to)
-{
-}
-
-void SendIt::parseArgs()
-{
+MailSender::MailSender(string &filename) {
 }

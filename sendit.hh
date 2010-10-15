@@ -6,6 +6,9 @@
 // This is the class that will send the email message.
 // $Header$
 
+#ifndef SENDIT_H
+#define SENDIT_
+
 #include "mailsender.hh"
 
 class SendIt: public MailSender
@@ -20,3 +23,4 @@ public:
                      string &envelope_to);
     void parseArgs(); 
 };
+#endif

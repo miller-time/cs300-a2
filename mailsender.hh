@@ -6,6 +6,9 @@
 // This is the class that will send the email message.
 // $Header$
 
+#ifndef MAILSENDER_H
+#define MAILSENDER_H
+
 #include <string>
 
 using namespace std;
@@ -37,3 +40,4 @@ public:
                      string &envelope_to) = 0;
 
 };
+#endif
