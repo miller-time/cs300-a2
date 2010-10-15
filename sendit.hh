@@ -13,7 +13,10 @@ class SendIt: public MailSender
 
 public:
 
+    SendIt(string &filename);
+
     virtual int send(string &host_to,
                      string &envelope_from,
                      string &envelope_to);
+    void parseArgs(); 
 };

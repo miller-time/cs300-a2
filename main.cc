@@ -9,6 +9,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include "sendit.hh"
 using namespace std;
 
 void missingOperand() {
@@ -29,6 +30,8 @@ void parseArg(char* arg) {
         fin.close();
     } else {
     // open a file - check if it exists etc..
+    string filename ("HELP");
+    SendIt newmail(filename);
     }
 }
 

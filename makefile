@@ -6,11 +6,14 @@
 
 all: modestmail
 
-modestmail: main.o
-	g++ main.o -o modestmail
+modestmail: main.o sendit.o
+	g++ main.o sendit.o -o modestmail
 
 main.o: main.cc
 	g++ -c main.cc
+
+sendit.o: sendit.cc
+	g++ -c sendit.cc
 
 clean:
 	rm *.o modestmail
