@@ -9,8 +9,8 @@ all: modestmail
 modestmail: main.o
 	g++ main.o -o modestmail
 
-main.o: main.cpp
-	g++ -c main.cpp
+main.o: main.cc
+	g++ -c main.cc
 
 clean:
 	rm *.o modestmail

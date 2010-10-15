@@ -2,7 +2,7 @@
 // Please see included license information or visit
 // http://opensource.org/licenses/mit-license.php
 
-// main.cpp
+// main.cc
 // This is the entry point for the ModestMail program
 // $Header$
 
@@ -26,6 +26,7 @@ void parseArg(char* arg) {
         while (getline(fin, help_contents) != 0) {
             cout << help_contents << endl;
         }
+        fin.close();
     } else {
     // open a file - check if it exists etc..
     }
