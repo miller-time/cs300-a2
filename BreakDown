@@ -3,20 +3,23 @@ Work Breakdown Structure v0.0
     --cheating and building main function first.
 
 1- Read Beej guide - 1.5 hrs
+        --i think i've read enough. took 30 minutes.
 
-2- Read Man pages - 1.5 hours
+2- Read RFC spec - 1 hour
 
-3- Read RFC spec - 1 hour
+3- Design Doc - Set up Structure of Classes and Heirarchy - 1 hour
 
-4- Design Doc - Set up Structure of Classes and Heirarchy - 1 hour
+4- Design Doc - Pseudo code - 2 hours
 
-5- Design Doc - Pseudo code - 2 hours
-
-6- Design the system calls for sockets etc - 2 hours 
+5- Design the system calls for sockets etc - 4 hours
         --this will need adjustment as i complete step 1 and 2
+   & Read Man pages along the way (while following Beej guide)
 
-7- Design wrapper functions and other classes - 1 hour
+6- Design wrapper functions and other classes - 1 hour
 
-8- Develop test cases and typescript them - 1 hour
+7- Develop test cases and typescript them - 1 hour
 
-9- Double check all requirements, inspect code - 1 hour
+8- Double check all requirements, inspect code - 1 hour
+
+        Total Expected Time: 12.5 hours
+        Total Actual Time:   30 mins
