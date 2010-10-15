@@ -1,0 +1,20 @@
+Copyright 2010 by Russell Miller
+Please see included license information or visit
+http://opensource.org/licenses/mit-license.php
+
+INSTALL
+
+To build and use ModestMail type the following command:
+
+    make
+
+That compiles the program into the executable modestmail. Then you can type:
+
+    ./modestmail
+
+That starts the program. You'll notice this command actually won't do anything.
+You can either specify a <filename> or simply type:
+
+    ./modestmail --help
+
+That will give more information.

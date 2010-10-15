@@ -36,4 +36,4 @@ public:
                      string &envelope_from,
                      string &envelope_to) = 0;
 
-}
+};

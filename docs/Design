@@ -1,0 +1,28 @@
+Copyright 2010 by Russell Miller
+Please see included license information or visit
+http://opensource.org/licenses/mit-license.php
+
+Design
+An outline of the objects and their relations within this project. 
+
+main driver
+-----------
+-simple print functions
+-handle argv
+-call SendIt class startup routine
+
+MailSender
+----------
+-abstract base class
+-send() - final step of sending the message
+
+SendIt
+------
+-inherits from MailSender
+-implements send() - contains the socket/connect calls
+-parses from a file, using string::find, fills class members
+
+-members:
+  string from
+  string to
+  string message
