@@ -1,0 +1,4 @@
+Usage: ./modestmail FILE
+Send message in FILE to "To" address in FILE using TCP socket.
+
+FILE is an RFC822 formatted email message.
