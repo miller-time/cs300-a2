@@ -1,9 +1,11 @@
 Work Breakdown Structure v0.0
 -------------------------------
-    --cheating and building main function first.
+    --built main function. took 30 minutes.
 
 1- Read Beej guide - 1.5 hrs
         --i think i've read enough. took 30 minutes.
+
+    --started on the design doc on paper
 
 2- Read RFC spec - 1 hour
 
@@ -22,4 +24,4 @@ Work Breakdown Structure v0.0
 8- Double check all requirements, inspect code - 1 hour
 
         Total Expected Time: 12.5 hours
-        Total Actual Time:   30 mins
+        Total Actual Time:   1 hour

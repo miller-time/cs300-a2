@@ -2,7 +2,7 @@
 // Please see included license information or visit
 // http://opensource.org/licenses/mit-license.php
 
-// mailsender.h
+// mailsender.hh
 // This is the class that will send the email message.
 // $Header$
 
