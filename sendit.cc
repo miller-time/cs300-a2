@@ -12,6 +12,9 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netdb.h>
 #include "mailsender.hh"
 #include "sendit.hh"
 using std::cout;
@@ -31,13 +34,31 @@ SendIt::SendIt(string &filename):MailSender(filename) {
 
 // Data members will already be set by parse_file before this
 // function is called.
-int SendIt::send(string &host_to,
-                 string &envelope_from,
-                 string &envelope_to)
+int SendIt::send_message(string &host_to,
+                         string &envelope_from,
+                         string &envelope_to)
 {
-    cout << host_to << endl
-         << envelope_from << endl
-         << envelope_to << endl;
+    int socket_descriptor;
+    int status;
+    addrinfo *host_addrinfo;
+    // Make the call to fill the addrinfo struct
+    if ((status = getaddrinfo(host_to.c_str(), "25", NULL, &host_addrinfo)) != 0) {
+        cerr << gai_strerror(status) << endl;
+        return 1;
+    }
+    // Get the socket descriptor
+    socket_descriptor = socket(host_addrinfo->ai_family,
+                               host_addrinfo->ai_socktype,
+                               host_addrinfo->ai_protocol);
+    // Connect to the socket
+    connect(socket_descriptor, host_addrinfo->ai_addr, host_addrinfo->ai_addrlen);
+    // Send message
+    int len, bytes_sent;
+    len = Message.length();
+    bytes_sent = send(socket_descriptor, Message.c_str(), len, 0);
+    // free the linked list of server info
+    freeaddrinfo(host_addrinfo);
+    cout << "Message sending complete. Bytes sent: " << bytes_sent << endl;
     return 0;
 }
 
@@ -98,6 +119,6 @@ int SendIt::parse_file() {
             return 1;
     }
     // OK! Now we should have all the necessary pieces!
-    send(host, env_from, env_to);
+    send_message(host, env_from, env_to);
     return 0;
 }

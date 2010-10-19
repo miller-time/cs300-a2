@@ -23,9 +23,10 @@ public:
 
     SendIt(string &filename);
 
-    int parse_file(); 
-    virtual int send(string &host_to,
-                     string &envelope_from,
-                     string &envelope_to);
+    int parse_file();
+    // renamed send because it clashes with socket send
+    virtual int send_message(string &host_to,
+                             string &envelope_from,
+                             string &envelope_to);
 };
 #endif

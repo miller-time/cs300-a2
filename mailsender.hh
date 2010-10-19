@@ -34,10 +34,13 @@ public:
     // case of failure, the global variable errno
 
     // will be set to indicate a failure code.
+    
 
-    virtual int send(string &host_to,
-                     string &envelope_from,
-                     string &envelope_to) = 0;
+    // renamed send because of clash with socket send
+
+    virtual int send_message(string &host_to,
+                             string &envelope_from,
+                             string &envelope_to) = 0;
 
 };
 #endif
