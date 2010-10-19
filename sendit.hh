@@ -14,13 +14,17 @@
 class SendIt: public MailSender
 {
 
+protected:
+
+    string EmailFile;
+
 public:
 
     SendIt(string &filename);
 
+    void parse_file(); 
     virtual int send(string &host_to,
                      string &envelope_from,
                      string &envelope_to);
-    void parseArgs(); 
 };
 #endif

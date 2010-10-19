@@ -12,12 +12,12 @@
 #include "sendit.hh"
 using namespace std;
 
-void missingOperand() {
+void missing_operand() {
     cout << "modestmail: missing operand\n"
          << "Try `modestmail --help' for more information.\n";
 }
 
-void parseArg(char* arg) {
+void parse_arg(char* arg) {
     ifstream fin;
     string help ("--help");
     if (help.compare(arg) == 0)
@@ -30,15 +30,17 @@ void parseArg(char* arg) {
         fin.close();
     } else {
     // open a file - check if it exists etc..
-    string filename ("HELP");
-    SendIt newmail(filename);
+        //string filename ("HELP");
+        string filename (arg);
+        SendIt newmail(filename);
+        newmail.parse_file();
     }
 }
 
 int main (int argc, char **argv) {
     if (argc != 2) {
-        missingOperand();
+        missing_operand();
     } else {
-        parseArg(argv[1]);
+        parse_arg(argv[1]);
     }
 }
