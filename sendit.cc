@@ -35,10 +35,9 @@ int SendIt::send(string &host_to,
                  string &envelope_from,
                  string &envelope_to)
 {
-//    cout << host_to << endl
-//         << envelope_from << endl
-//         << envelope_to << endl;
-    cout << envelope_to << endl;
+    cout << host_to << endl
+         << envelope_from << endl
+         << envelope_to << endl;
     return 0;
 }
 
@@ -59,14 +58,15 @@ int SendIt::parse_file() {
     // Entire message file is now read. Need to search the
     // "Message" data member string for certain substrings.
     string to_address("To: ");
+    string at_symbol("@");
     string from_address("From: ");
     // Looking for the to address
     // start_address is the index of the substring "To: "
     size_t start_address = Message.find(to_address);
     // This cuts off everything before "To: " (length 4)
-    string msg_after_to = Message.substr(start_address + 4);
+    string msg_after_str = Message.substr(start_address + 4);
     // This measures how long the string goes until the newline
-    size_t address_length = msg_after_to.find("\n");
+    size_t address_length = msg_after_str.find("\n");
     if (start_address != string::npos &&
         address_length != string::npos)
     {
@@ -78,7 +78,26 @@ int SendIt::parse_file() {
     }
     // Now need to find the host. This is just the tail of the
     // to address
+    start_address = env_to.find(at_symbol);
+    if (start_address != string::npos)
+        host = env_to.substr(start_address + 1);
+    else {
+        cout << "To address not formatted correctly.\n";
+        return 1;
+    }
+    // And finally getting out the from address the same way
     start_address = Message.find(from_address);
+    msg_after_str = Message.substr(start_address + 6);
+    address_length = msg_after_str.find("\n");
+    if (start_address != string::npos &&
+        address_length != string::npos)
+    {
+            env_from = Message.substr(start_address + 6, address_length);
+    } else {
+            cout << "From address not found in file.\n";
+            return 1;
+    }
+    // OK! Now we should have all the necessary pieces!
     send(host, env_from, env_to);
     return 0;
 }

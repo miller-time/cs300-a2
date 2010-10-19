@@ -1,5 +1,5 @@
 From: rtmiller@pdx.edu
-To: millerr@cs.pdx.edu
+To: millerr@mailhost.cecs.pdx.edu
 Date: Fri Oct 15 12:08:59 PDT 2010
 Subject: test
 
