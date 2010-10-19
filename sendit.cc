@@ -14,9 +14,10 @@ SendIt::SendIt(string &filename):MailSender(filename)
 }
 
 int SendIt::send(string &host_to,
-		 string &envelope_from,
-		 string &envelope_to)
+                 string &envelope_from,
+                 string &envelope_to)
 {
+    return 0;
 }
 
 void SendIt::parseArgs()
