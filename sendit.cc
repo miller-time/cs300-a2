@@ -74,7 +74,7 @@ int SendIt::send_message(string &host_to,
     int bytes_rcvd;
     // Check for Server's response
     bytes_rcvd = recv(socket_descriptor, buf, 999, 0);
-    buf[3] = '\0';
+    buf[3] = '\0'; // chops off everything but the status
     cout << buf << endl;
     string two20("220");
     // Do not continue if server closed connection
@@ -93,9 +93,9 @@ int SendIt::send_message(string &host_to,
     // Send message
     bytes_sent = send(socket_descriptor, smtp_msg.c_str(), len, 0);
     // Check response
-    buf[3] = ' ';
+    buf[3] = ' '; // don't want recv to stop after 3 chars
     bytes_rcvd = recv(socket_descriptor, buf, 999, 0);
-    buf[3] = '\0';
+    buf[3] = '\0'; // chops off everything but the status
     cout << buf << endl;
     string two50("250");
     // Do not continue if server closed connection
@@ -104,9 +104,66 @@ int SendIt::send_message(string &host_to,
         return 1;
     }
 
-    
-//    len = Message.length();
-//    bytes_sent = send(socket_descriptor, Message.c_str(), len, 0);
+   
+    // Reinitializing for RCPT message
+    smtp_msg = "RCPT TO:<";
+    smtp_msg += envelope_to + ">\r\n";
+    len = smtp_msg.length();
+    cout << smtp_msg;
+    // Send message
+    bytes_sent = send(socket_descriptor, smtp_msg.c_str(), len, 0);
+    // Check response
+    buf[3] = ' '; // don't want recv to stop after 3 chars
+    bytes_rcvd = recv(socket_descriptor, buf, 999, 0);
+    buf[3] = '\0'; // chops off everything but the status
+    cout << buf << endl;
+    // Do not continue if server closed connection
+    if (two50.compare(buf) != 0) {
+        cerr << "Server closed connection\n";
+        return 1;
+    }
+
+
+    // Reinitializing for DATA message
+    smtp_msg = "DATA\r\n";
+    len = smtp_msg.length();
+    cout << smtp_msg;
+    // Send message
+    bytes_sent = send(socket_descriptor, smtp_msg.c_str(), len, 0);
+    // Check response
+    buf[3] = ' '; // don't want recv to stop after 3 chars
+    bytes_rcvd = recv(socket_descriptor, buf, 999, 0);
+    buf[3] = '\0'; // chops off everything but the status
+    cout << buf << endl;
+    string three54("354");
+    // Do not continue if server closed connection
+    if (three54.compare(buf) != 0) {
+        cerr << "Server closed connection\n";
+        return 1;
+    }
+
+
+    // Reinitializing for actual sending of message
+    smtp_msg = Message + "\r\n.\r\n";
+    len = smtp_msg.length();
+    cout << smtp_msg;
+    // Send message
+    bytes_sent = send(socket_descriptor, smtp_msg.c_str(), len, 0);
+    // Check response
+    buf[3] = ' '; // don't want recv to stop after 3 chars
+    bytes_rcvd = recv(socket_descriptor, buf, 999, 0);
+//    buf[3] = '\0'; // chops off everything but the status
+    cout << buf << endl;
+    // Do not continue if server closed connection
+    if (two50.compare(buf) != 0) {
+        cerr << "Server closed connection\n";
+        return 1;
+    }
+
+
+
+
+
     // free the linked list of server info
     close(socket_descriptor);
     freeaddrinfo(host_addrinfo);
