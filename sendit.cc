@@ -152,7 +152,7 @@ int SendIt::send_message(string &host_to,
     // Check response
     buf[3] = ' '; // don't want recv to stop after 3 chars
     bytes_rcvd = recv(socket_descriptor, buf, 999, 0);
-//    buf[3] = '\0'; // chops off everything but the status
+    buf[3] = '\0'; // chops off everything but the status
     cout << buf << endl;
     // Do not continue if server closed connection
     if (two50.compare(buf) != 0) {
@@ -161,13 +161,21 @@ int SendIt::send_message(string &host_to,
     }
 
 
-
-
+    // Reinitializing for QUIT message
+    smtp_msg = "QUIT\r\n";
+    len = smtp_msg.length();
+    cout << smtp_msg;
+    // Send message
+    bytes_sent = send(socket_descriptor, smtp_msg.c_str(), len, 0);
+    // Check response
+    buf[3] = ' '; // don't want recv to stop after 3 chars
+    bytes_rcvd = recv(socket_descriptor, buf, 999, 0);
+    buf[3] = '\0'; // chops off everything but the status
+    cout << buf << endl;
 
     // free the linked list of server info
     close(socket_descriptor);
     freeaddrinfo(host_addrinfo);
-//    cout << "Message sending complete. Bytes sent: " << bytes_sent << endl;
     return 0;
 }
 
@@ -191,10 +199,10 @@ int SendIt::parse_file() {
         Message += line += "\n";
     }
     fin.close(); // check return value
-    
+
     // Entire message file is now read. Need to search the
     // "Message" data member string for certain substrings.
-    
+
     string to_address("To: ");
     string at_symbol("@");
     string from_address("From: ");
@@ -214,7 +222,7 @@ int SendIt::parse_file() {
             cout << "To address not found in file.\n";
             return 1;
     }
-    
+
     // Now need to find the host. This is just the tail of the
     // to address
     start_address = env_to.find(at_symbol);
@@ -238,6 +246,10 @@ int SendIt::parse_file() {
             return 1;
     }
     // OK! Now we should have all the necessary pieces!
-    send_message(host, env_from, env_to);
+    int sent;
+    if ((sent = send_message(host, env_from, env_to)) != 0) {
+        cerr << "Error sending message. Please try again.\n";
+        return 1;
+    }
     return 0;
 }
