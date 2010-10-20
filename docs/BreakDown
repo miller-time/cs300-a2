@@ -21,7 +21,7 @@ Work Breakdown Structure v0.2
    & Read Man pages along the way (while following Beej guide)
         --parsing functionality took 45 minutes to code-up (needs unit testing)
         --socket functionality took 45 minutes
-        still need to implement smtp communication
+        --SMTP messages took about 2 hours to code
 
 6- Design wrapper functions and other classes - 1 hour
         --main function that initiates the parse/send took about 20 minutes
@@ -31,4 +31,4 @@ Work Breakdown Structure v0.2
 8- Double check all requirements, inspect code - 1 hour
 
         Total Expected Time: 12.5 hours
-        Total Actual Time:   4 hours
+        Total Actual Time:   6 hours
