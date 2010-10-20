@@ -189,6 +189,7 @@ int SendIt::parse_file() {
     string host, env_from, env_to;
     // stream variable for opening email file
     ifstream fin;
+    cout << "Opening file: " << EmailFile << endl;
     fin.open(EmailFile.c_str());
     // variable for reading each line of data from file
     string line;
@@ -198,7 +199,7 @@ int SendIt::parse_file() {
         // also might want to check for lone .'s to avoid errors     <---------
         Message += line += "\n";
     }
-    fin.close(); // check return value
+    fin.close(); // check return value                   <-------------------
 
     // Entire message file is now read. Need to search the
     // "Message" data member string for certain substrings.
@@ -218,6 +219,11 @@ int SendIt::parse_file() {
     {
             // This assigns the resulting email address to the data member
             env_to = Message.substr(start_address + 4, address_length);
+            // Make sure no comment or whitespace trailing
+            int checker;
+            while ((checker = env_to.find(" ")) != string::npos) {
+                env_to.erase(checker);
+            }
     } else {
             cout << "To address not found in file.\n";
             return 1;
@@ -241,6 +247,11 @@ int SendIt::parse_file() {
         address_length != string::npos)
     {
             env_from = Message.substr(start_address + 6, address_length);
+            // Make sure no comment or whitespace trailing
+            int checker;
+            while ((checker = env_from.find(" ")) != string::npos) {
+                env_from.erase(checker);
+            }
     } else {
             cout << "From address not found in file.\n";
             return 1;
