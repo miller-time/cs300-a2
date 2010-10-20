@@ -1,4 +1,4 @@
-Work Breakdown Structure v0.0
+Work Breakdown Structure v0.2
 -------------------------------
     --built main function. took 30 minutes.
 
@@ -8,20 +8,27 @@ Work Breakdown Structure v0.0
     --started on the design doc on paper
 
 2- Read RFC spec - 1 hour
+    --scanned for about 30 minutes
 
 3- Design Doc - Set up Structure of Classes and Heirarchy - 1 hour
+    --wrote this up in about 20 minutes
 
 4- Design Doc - Pseudo code - 2 hours
+    --skipped
 
-5- Design the system calls for sockets etc - 4 hours
+5- Develop the system calls for sockets etc - 4 hours
         --this will need adjustment as i complete step 1 and 2
    & Read Man pages along the way (while following Beej guide)
+        --parsing functionality took 45 minutes to code-up (needs unit testing)
+        --socket functionality took 45 minutes
+        still need to implement smtp communication
 
 6- Design wrapper functions and other classes - 1 hour
+        --main function that initiates the parse/send took about 20 minutes
 
 7- Develop test cases and typescript them - 1 hour
 
 8- Double check all requirements, inspect code - 1 hour
 
         Total Expected Time: 12.5 hours
-        Total Actual Time:   1 hour
+        Total Actual Time:   4 hours
