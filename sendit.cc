@@ -21,16 +21,19 @@ using std::cout;
 using std::endl;
 
 
+// CONSTRUCTOR
 SendIt::SendIt(string &filename):MailSender(filename) {
     // Setting the data member that holds the file name.
     EmailFile = filename;
 }
 
+
+// SEND_MESSAGE
 // This function is inherited from MailSender and is designed
 // to open a socket, and send the email message to the server
 // the socket is communicating with.
 
-// CHECK FOR VALIDITY
+// CHECK FOR VALIDITY                                <----------------------
 
 // Data members will already be set by parse_file before this
 // function is called.
@@ -52,32 +55,89 @@ int SendIt::send_message(string &host_to,
                                host_addrinfo->ai_protocol);
     // Connect to the socket
     connect(socket_descriptor, host_addrinfo->ai_addr, host_addrinfo->ai_addrlen);
-    // Send message
+
+
+    // socket ready to connect, now need to begin communicating with
+    // the SMTP server. this happens through several individual
+    // sends and receives.
+
+
     int len, bytes_sent;
-    len = Message.length();
-    bytes_sent = send(socket_descriptor, Message.c_str(), len, 0);
+    // Initialize variables used to contact SMTP server
+    string smtp_msg("HELO ");
+    smtp_msg += host_to + "\r\n";
+    len = smtp_msg.length();
+    cout << smtp_msg;
+    // Make initial contact to the SMTP Server
+    bytes_sent = send(socket_descriptor, smtp_msg.c_str(), len, 0);
+    char buf[999];
+    int bytes_rcvd;
+    // Check for Server's response
+    bytes_rcvd = recv(socket_descriptor, buf, 999, 0);
+    buf[3] = '\0';
+    cout << buf << endl;
+    string two20("220");
+    // Do not continue if server closed connection
+    if (two20.compare(buf) != 0) {
+        cerr << "Server closed connection\n";
+        // should add the close() and free here                   <----------
+        return 1;
+    }
+
+
+    // Reinitialize variables for MAIL message
+    smtp_msg = "MAIL FROM:<";
+    smtp_msg += envelope_from + ">\r\n";
+    len = smtp_msg.length();
+    cout << smtp_msg;
+    // Send message
+    bytes_sent = send(socket_descriptor, smtp_msg.c_str(), len, 0);
+    // Check response
+    buf[3] = ' ';
+    bytes_rcvd = recv(socket_descriptor, buf, 999, 0);
+    buf[3] = '\0';
+    cout << buf << endl;
+    string two50("250");
+    // Do not continue if server closed connection
+    if (two50.compare(buf) != 0) {
+        cerr << "Server closed connection\n";
+        return 1;
+    }
+
+    
+//    len = Message.length();
+//    bytes_sent = send(socket_descriptor, Message.c_str(), len, 0);
     // free the linked list of server info
+    close(socket_descriptor);
     freeaddrinfo(host_addrinfo);
-    cout << "Message sending complete. Bytes sent: " << bytes_sent << endl;
+//    cout << "Message sending complete. Bytes sent: " << bytes_sent << endl;
     return 0;
 }
 
+
+// PARSE_FILE
 // This function is designed to open the file and pick all of
 // the information out of it. It gets the envelope information, 
 // as well as storing the message as a string into data members.
 int SendIt::parse_file() {
-    string host("host");
-    string env_from("from");
-    string env_to;
+    // variables that will be passed to send_message()
+    string host, env_from, env_to;
+    // stream variable for opening email file
     ifstream fin;
     fin.open(EmailFile.c_str());
+    // variable for reading each line of data from file
     string line;
     while (getline(fin, line) != 0) {
+        // SendIt's data member building up its data line by line
+        // might need to check for the lone newline and add the \r   <---------
+        // also might want to check for lone .'s to avoid errors     <---------
         Message += line += "\n";
     }
     fin.close(); // check return value
+    
     // Entire message file is now read. Need to search the
     // "Message" data member string for certain substrings.
+    
     string to_address("To: ");
     string at_symbol("@");
     string from_address("From: ");
@@ -97,6 +157,7 @@ int SendIt::parse_file() {
             cout << "To address not found in file.\n";
             return 1;
     }
+    
     // Now need to find the host. This is just the tail of the
     // to address
     start_address = env_to.find(at_symbol);
@@ -106,6 +167,7 @@ int SendIt::parse_file() {
         cout << "To address not formatted correctly.\n";
         return 1;
     }
+
     // And finally getting out the from address the same way
     start_address = Message.find(from_address);
     msg_after_str = Message.substr(start_address + 6);
