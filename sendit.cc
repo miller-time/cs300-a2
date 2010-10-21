@@ -1,5 +1,6 @@
 // Copyright 2010 by Russell Miller
-// Please see included license information or visit
+// Please see included license information in file 
+// COPYING or visit
 // http://opensource.org/licenses/mit-license.php
 
 // sendit.cc
@@ -220,9 +221,18 @@ int SendIt::parse_file() {
             // This assigns the resulting email address to the data member
             env_to = Message.substr(start_address + 4, address_length);
             // Make sure no comment or whitespace trailing
-            int checker;
+            size_t checker;
+            // This loop repeatedly deletes any spaces detected in the "To" line
             while ((checker = env_to.find(" ")) != string::npos) {
                 env_to.erase(checker);
+            }
+            // This loop does the same thing for tabs
+            while ((checker = env_to.find("\t")) != string::npos) {
+                env_to.erase(checker);
+            }
+            // This looks for a semicolon and deletes everything after it.
+            if ((checker = env_to.find(";")) != string::npos) {
+                env_to = env_to.substr((size_t)0, checker);
             }
     } else {
             cout << "To address not found in file.\n";

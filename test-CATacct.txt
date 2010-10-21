@@ -1,5 +1,5 @@
 From: rtmiller@pdx.edu   
-To: thatguy@mailhost.cecs.pdx.edu   
+To: thatguy@mailhost.cecs.pdx.edu  ;comment here 
 Date: Fri Oct 15 12:08:59 PDT 2010
 Subject: test
 
