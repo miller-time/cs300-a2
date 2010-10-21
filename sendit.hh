@@ -14,19 +14,29 @@
 class SendIt: public MailSender
 {
 
-protected:
-
-    string EmailFile;
-    string Message;
-
 public:
 
+    // constructor
     SendIt(string &filename);
 
+    // public functions
     int parse_file();
     // renamed send because it clashes with socket send
     virtual int send_message(string &host_to,
                              string &envelope_from,
                              string &envelope_to);
+
+protected:
+
+    // data members
+    string EmailFile;   // name of file
+    string Message;     // message contents
+
+private:
+    
+    // private worker functions
+    string find_addr(string &, string);
+    string sanitize_addr(string &);
+
 };
 #endif

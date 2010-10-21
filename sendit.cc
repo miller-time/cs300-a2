@@ -181,6 +181,31 @@ int SendIt::send_message(string &host_to,
 }
 
 
+string SendIt::find_addr(string &msg, string target) {
+    // get size of target substring
+    int len = target.length();
+    // start_address is the index of the target substring
+    size_t start_address = msg.find(target);
+    // This cuts off everything before target (plus its length)
+    string msg_after_str = msg.substr(start_address + len);
+    // This measures how long the string goes until the newline
+    size_t address_length = msg_after_str.find("\n");
+    if (start_address != string::npos &&
+        address_length != string::npos)
+    {
+            // Found. Return the result
+            return msg.substr(start_address + len, address_length);
+    } else {
+            // Not found. Return NULL to see error.
+            return NULL;
+    }
+}
+
+
+string SendIt::sanitize_addr(string &address) {
+}
+
+
 // PARSE_FILE
 // This function is designed to open the file and pick all of
 // the information out of it. It gets the envelope information, 
