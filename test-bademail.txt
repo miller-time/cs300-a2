@@ -1,0 +1,5 @@
+To: fake-email-at-bad-format.com
+From: me
+Subject: I don't know how to write emails.
+
+Derp

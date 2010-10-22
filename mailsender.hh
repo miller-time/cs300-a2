@@ -38,9 +38,9 @@ public:
 
     // renamed send because of clash with socket send
 
-    virtual int send_message(string &host_to,
-                             string &envelope_from,
-                             string &envelope_to) = 0;
+    virtual int send(string &host_to,
+                     string &envelope_from,
+                     string &envelope_to) = 0;
 
 };
 #endif

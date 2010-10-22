@@ -21,10 +21,9 @@ public:
 
     // public functions
     int parse_file();
-    // renamed send because it clashes with socket send
-    virtual int send_message(string &host_to,
-                             string &envelope_from,
-                             string &envelope_to);
+    virtual int send(string &host_to,
+                     string &envelope_from,
+                     string &envelope_to);
 
 protected:
 
@@ -33,10 +32,11 @@ protected:
     string Message;     // message contents
 
 private:
-    
-    // private worker functions
+
+    // utility functions
+    string read_and_write(int, string &);
     string find_addr(string &, string);
-    string sanitize_addr(string &);
+    void sanitize_addr(string &);
 
 };
 #endif

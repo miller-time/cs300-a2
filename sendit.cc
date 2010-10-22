@@ -28,8 +28,26 @@ SendIt::SendIt(string &filename):MailSender(filename) {
     EmailFile = filename;
 }
 
+// READ_AND_WRITE
+// This function makes the repeated calls to read() and
+// write() and returns the 3-digit response.
+string SendIt::read_and_write(int sd, string &msg) {
+    size_t bytes_sent; // used to compare with message length
+    char buf[999];      // used to store response from server
+    cout << msg;
+    bytes_sent = write(sd, msg.c_str(), msg.length());
+    // warn about bytes_sent mismatch
+    if (bytes_sent != msg.length()) {
+        cout << "Warning: Message not fully transmitted.\n";
+    }
+    read(sd, buf, 999);
+    buf[3] = '\0';      // force-shorted response to 3 digits
+    cout << buf << endl;
+    return (string(buf));
+}
 
-// SEND_MESSAGE
+
+// SEND
 // This function is inherited from MailSender and is designed
 // to open a socket, and send the email message to the server
 // the socket is communicating with.
@@ -38,9 +56,9 @@ SendIt::SendIt(string &filename):MailSender(filename) {
 
 // Data members will already be set by parse_file before this
 // function is called.
-int SendIt::send_message(string &host_to,
-                         string &envelope_from,
-                         string &envelope_to)
+int SendIt::send(string &host_to,
+                 string &envelope_from,
+                 string &envelope_to)
 {
     int socket_descriptor;
     int status;
@@ -63,116 +81,78 @@ int SendIt::send_message(string &host_to,
     // sends and receives.
 
 
-    int len, bytes_sent;
-    // Initialize variables used to contact SMTP server
+    // Initialize HELO message
     string smtp_msg("HELO ");
     smtp_msg += host_to + "\r\n";
-    len = smtp_msg.length();
-    cout << smtp_msg;
-    // Make initial contact to the SMTP Server
-    bytes_sent = send(socket_descriptor, smtp_msg.c_str(), len, 0);
-    char buf[999];
-    int bytes_rcvd;
-    // Check for Server's response
-    bytes_rcvd = recv(socket_descriptor, buf, 999, 0);
-    buf[3] = '\0'; // chops off everything but the status
-    cout << buf << endl;
-    string two20("220");
+    // Use utility function to contact server
+    string response = read_and_write(socket_descriptor, smtp_msg);
     // Do not continue if server closed connection
-    if (two20.compare(buf) != 0) {
+    if (response.compare("220") != 0) {
         cerr << "Server closed connection\n";
-        // should add the close() and free here                   <----------
+        close(socket_descriptor);
+        freeaddrinfo(host_addrinfo);
         return 1;
     }
 
 
-    // Reinitialize variables for MAIL message
+    // Set MAIL FROM message
     smtp_msg = "MAIL FROM:<";
     smtp_msg += envelope_from + ">\r\n";
-    len = smtp_msg.length();
-    cout << smtp_msg;
-    // Send message
-    bytes_sent = send(socket_descriptor, smtp_msg.c_str(), len, 0);
-    // Check response
-    buf[3] = ' '; // don't want recv to stop after 3 chars
-    bytes_rcvd = recv(socket_descriptor, buf, 999, 0);
-    buf[3] = '\0'; // chops off everything but the status
-    cout << buf << endl;
-    string two50("250");
+    // Use utility function to contact server
+    response = read_and_write(socket_descriptor, smtp_msg);
     // Do not continue if server closed connection
-    if (two50.compare(buf) != 0) {
+    if (response.compare("250") != 0) {
         cerr << "Server closed connection\n";
+        close(socket_descriptor);
+        freeaddrinfo(host_addrinfo);
         return 1;
     }
 
-   
-    // Reinitializing for RCPT message
+
+    // Set RCPT TO message
     smtp_msg = "RCPT TO:<";
     smtp_msg += envelope_to + ">\r\n";
-    len = smtp_msg.length();
-    cout << smtp_msg;
-    // Send message
-    bytes_sent = send(socket_descriptor, smtp_msg.c_str(), len, 0);
-    // Check response
-    buf[3] = ' '; // don't want recv to stop after 3 chars
-    bytes_rcvd = recv(socket_descriptor, buf, 999, 0);
-    buf[3] = '\0'; // chops off everything but the status
-    cout << buf << endl;
+    // Use utility function to contact server
+    response = read_and_write(socket_descriptor, smtp_msg);
     // Do not continue if server closed connection
-    if (two50.compare(buf) != 0) {
+    if (response.compare("250") != 0) {
         cerr << "Server closed connection\n";
+        close(socket_descriptor);
+        freeaddrinfo(host_addrinfo);
         return 1;
     }
 
 
-    // Reinitializing for DATA message
+    // Set DATA message
     smtp_msg = "DATA\r\n";
-    len = smtp_msg.length();
-    cout << smtp_msg;
-    // Send message
-    bytes_sent = send(socket_descriptor, smtp_msg.c_str(), len, 0);
-    // Check response
-    buf[3] = ' '; // don't want recv to stop after 3 chars
-    bytes_rcvd = recv(socket_descriptor, buf, 999, 0);
-    buf[3] = '\0'; // chops off everything but the status
-    cout << buf << endl;
-    string three54("354");
+    // Use utility function to contact server
+    response = read_and_write(socket_descriptor, smtp_msg);
     // Do not continue if server closed connection
-    if (three54.compare(buf) != 0) {
+    if (response.compare("354") != 0) {
         cerr << "Server closed connection\n";
+        close(socket_descriptor);
+        freeaddrinfo(host_addrinfo);
         return 1;
     }
 
 
-    // Reinitializing for actual sending of message
+    // Set actual message
     smtp_msg = Message + "\r\n.\r\n";
-    len = smtp_msg.length();
-    cout << smtp_msg;
-    // Send message
-    bytes_sent = send(socket_descriptor, smtp_msg.c_str(), len, 0);
-    // Check response
-    buf[3] = ' '; // don't want recv to stop after 3 chars
-    bytes_rcvd = recv(socket_descriptor, buf, 999, 0);
-    buf[3] = '\0'; // chops off everything but the status
-    cout << buf << endl;
+    // Use utility function to contact server
+    response = read_and_write(socket_descriptor, smtp_msg);
     // Do not continue if server closed connection
-    if (two50.compare(buf) != 0) {
+    if (response.compare("250") != 0) {
         cerr << "Server closed connection\n";
+        close(socket_descriptor);
+        freeaddrinfo(host_addrinfo);
         return 1;
     }
 
 
-    // Reinitializing for QUIT message
+    // Set QUIT message
     smtp_msg = "QUIT\r\n";
-    len = smtp_msg.length();
-    cout << smtp_msg;
-    // Send message
-    bytes_sent = send(socket_descriptor, smtp_msg.c_str(), len, 0);
-    // Check response
-    buf[3] = ' '; // don't want recv to stop after 3 chars
-    bytes_rcvd = recv(socket_descriptor, buf, 999, 0);
-    buf[3] = '\0'; // chops off everything but the status
-    cout << buf << endl;
+    // Use utility function to contact server
+    response = read_and_write(socket_descriptor, smtp_msg);
 
     // free the linked list of server info
     close(socket_descriptor);
@@ -181,6 +161,9 @@ int SendIt::send_message(string &host_to,
 }
 
 
+// FIND_ADDR
+// This function looks for a valid email address
+// and returns a string containing the line it is on.
 string SendIt::find_addr(string &msg, string target) {
     // get size of target substring
     int len = target.length();
@@ -190,19 +173,41 @@ string SendIt::find_addr(string &msg, string target) {
     string msg_after_str = msg.substr(start_address + len);
     // This measures how long the string goes until the newline
     size_t address_length = msg_after_str.find("\n");
+    string result = msg.substr(start_address + len, address_length);
+    // Also make sure valid address
+    size_t at_symbol;
+    at_symbol = result.find("@");
     if (start_address != string::npos &&
-        address_length != string::npos)
+        address_length != string::npos &&
+        at_symbol != string::npos)
     {
             // Found. Return the result
-            return msg.substr(start_address + len, address_length);
+            return result;
     } else {
-            // Not found. Return NULL to see error.
-            return NULL;
+            // Not found. Return empty string to see error.
+            result.clear();
+            return result;
     }
 }
 
 
-string SendIt::sanitize_addr(string &address) {
+// SANITIZE_ADDR
+// This function takes the initial parsing of an address
+// and prepares it to be used for SMTP commands
+void SendIt::sanitize_addr(string &address) {
+    size_t checker;
+    // This loop repeatedly deletes any spaces detected
+    while ((checker = address.find(" ")) != string::npos) {
+        address.erase(checker);
+    }
+    // This loop does the same thing for tabs
+    while ((checker = address.find("\t")) != string::npos) {
+        address.erase(checker);
+    }
+    // This looks for a semicolon and deletes everything after it.
+    if ((checker = address.find(";")) != string::npos) {
+        address = address.substr((size_t)0, checker);
+    }
 }
 
 
@@ -212,7 +217,8 @@ string SendIt::sanitize_addr(string &address) {
 // as well as storing the message as a string into data members.
 int SendIt::parse_file() {
     // variables that will be passed to send_message()
-    string host, env_from, env_to;
+    string host("mailhost.cecs.pdx.edu"); // MOVE TO CONFIG FILE <----------
+    string env_from, env_to;
     // stream variable for opening email file
     ifstream fin;
     cout << "Opening file: " << EmailFile << endl;
@@ -230,70 +236,29 @@ int SendIt::parse_file() {
     // Entire message file is now read. Need to search the
     // "Message" data member string for certain substrings.
 
-    string to_address("To: ");
-    string at_symbol("@");
-    string from_address("From: ");
-    // Looking for the to address
-    // start_address is the index of the substring "To: "
-    size_t start_address = Message.find(to_address);
-    // This cuts off everything before "To: " (length 4)
-    string msg_after_str = Message.substr(start_address + 4);
-    // This measures how long the string goes until the newline
-    size_t address_length = msg_after_str.find("\n");
-    if (start_address != string::npos &&
-        address_length != string::npos)
-    {
-            // This assigns the resulting email address to the data member
-            env_to = Message.substr(start_address + 4, address_length);
-            // Make sure no comment or whitespace trailing
-            size_t checker;
-            // This loop repeatedly deletes any spaces detected in the "To" line
-            while ((checker = env_to.find(" ")) != string::npos) {
-                env_to.erase(checker);
-            }
-            // This loop does the same thing for tabs
-            while ((checker = env_to.find("\t")) != string::npos) {
-                env_to.erase(checker);
-            }
-            // This looks for a semicolon and deletes everything after it.
-            if ((checker = env_to.find(";")) != string::npos) {
-                env_to = env_to.substr((size_t)0, checker);
-            }
-    } else {
-            cout << "To address not found in file.\n";
-            return 1;
-    }
-
-    // Now need to find the host. This is just the tail of the
-    // to address
-    start_address = env_to.find(at_symbol);
-    if (start_address != string::npos)
-        host = env_to.substr(start_address + 1);
-    else {
-        cout << "To address not formatted correctly.\n";
+    // Use utility function to extract to address
+    env_to = find_addr(Message, "To: ");
+    // Check for error from find
+    if (env_to.empty() == true) {
+        cout << "No valid To email address found.\n";
         return 1;
     }
+    // Use utility function to clean it up.
+    sanitize_addr(env_to);
 
-    // And finally getting out the from address the same way
-    start_address = Message.find(from_address);
-    msg_after_str = Message.substr(start_address + 6);
-    address_length = msg_after_str.find("\n");
-    if (start_address != string::npos &&
-        address_length != string::npos)
-    {
-            env_from = Message.substr(start_address + 6, address_length);
-            // Make sure no comment or whitespace trailing
-            int checker;
-            while ((checker = env_from.find(" ")) != string::npos) {
-                env_from.erase(checker);
-            }
-    } else {
-            cout << "From address not found in file.\n";
-            return 1;
+    // Use utility function to extract from address
+    env_from = find_addr(Message, "From: ");
+    // Check for error
+    if (env_from.empty() == true) {
+        cout << "No valid From email address found.\n";
+        return 1;
     }
+    // Use utility function to clean it up.
+    sanitize_addr(env_from);
+
     // OK! Now we should have all the necessary pieces!
     int sent;
-    if ((sent = send_message(host, env_from, env_to)) != 0) {
+    if ((sent = send(host, env_from, env_to)) != 0) {
         cerr << "Error sending message. Please try again.\n";
         return 1;
     }
