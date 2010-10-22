@@ -227,8 +227,9 @@ int SendIt::parse_file() {
     string line;
     while (getline(fin, line) != 0) {
         // SendIt's data member building up its data line by line
-        // might need to check for the lone newline and add the \r   <---------
-        // also might want to check for lone .'s to avoid errors     <---------
+        // Check for lone "." to make sure message isn't cut off early
+        if ((line.compare(".")) == 0)
+            line += ".";
         Message += line += "\n";
     }
     fin.close(); // check return value                   <-------------------
