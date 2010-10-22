@@ -1,12 +1,12 @@
 // Copyright 2010 by Russell Miller
-// Please see included license information in file 
+// Please see included license information in file
 // COPYING or visit
 // http://opensource.org/licenses/mit-license.php
 
 // sendit.cc
 // This is the class that will send the email message.
-// It inherits from the MailSender class. 
-// It has to parse the file for a from address and to 
+// It inherits from the MailSender class.
+// It has to parse the file for a from address and to
 // address.
 // $Header$
 
