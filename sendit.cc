@@ -12,7 +12,7 @@
 
 #include <iostream>
 #include <fstream>
-#include <string>
+#include <string.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
@@ -49,23 +49,33 @@ string SendIt::read_and_write(int sd, string &msg) {
 
 // SEND
 // This function is inherited from MailSender and is designed
-// to open a socket, and send the email message to the server
-// the socket is communicating with.
-
-// CHECK FOR VALIDITY                                <----------------------
-
+// to connect to a socket, and send the email message to the server
+// specified over that the socket.
+// It uses SMTP messaging to send specific commands to the server
+// and checks the response each time before continuing.
 // Data members will already be set by parse_file before this
-// function is called.
+// function is called, which will be used in the commands sent
+// to the server.
+// Anywhere there is a return 1 means the communication stopped
+// before the conversation with the SMTP server completed.
 int SendIt::send(string &host_to,
                  string &envelope_from,
                  string &envelope_to)
 {
     int socket_descriptor;
     int status;
-    // DO NOT JUST PASS NULL TO GETADDRINFO FILL THE STRUCT
+    // setting my address flags
+    addrinfo hints;
+    // making sure struct is cleared out
+    memset(&hints, 0, sizeof hints);
+    // either IPv4 or IPv6
+    hints.ai_family = AF_UNSPEC;
+    // TCP Sockets
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_flags = AI_PASSIVE;
     addrinfo *host_addrinfo;
     // Make the call to fill the addrinfo struct
-    if ((status = getaddrinfo(host_to.c_str(), "25", NULL, &host_addrinfo)) != 0) {
+    if ((status = getaddrinfo(host_to.c_str(), "25", &hints, &host_addrinfo)) != 0) {
         cerr << gai_strerror(status) << endl;
         return 1;
     }
@@ -220,7 +230,9 @@ void SendIt::sanitize_addr(string &address) {
 // PARSE_FILE
 // This function is designed to open the file and pick all of
 // the information out of it. It gets the envelope information, 
-// as well as storing the message as a string into data members.
+// as well as storing the message as a string.
+// All of this information is held in the SendIt object, to be
+// used by the SEND function.
 int SendIt::parse_file() {
     // variables that will be passed to send_message()
     string host, env_from, env_to;
