@@ -1,5 +1,6 @@
 # Copyright 2010 by Russell Miller
-# Please see included license information or visit
+# Please see included license information in file
+# COPYING or visit
 # http://opensource.org/licenses/mit-license.php
 
 # makefile

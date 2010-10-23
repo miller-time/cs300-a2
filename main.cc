@@ -39,7 +39,6 @@ void parse_arg(char* arg) {
         fin.open("HELP");
         string help_contents;
         while (getline(fin, help_contents) != 0) {
-            // check for return -1  <-------------------------
             cout << help_contents << endl;
         }
         fin.close();

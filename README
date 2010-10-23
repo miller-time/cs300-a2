@@ -1,0 +1,59 @@
+Copyright 2010 by Russell Miller
+Please see included license information in file
+COPYING or visit
+http://opensource.org/licenses/mit-license.php
+
+MODESTMAIL
+
+This simple mailing program was designed for a CS300 assignment at Portland
+State University Fall 2010 with Bart Massey.
+
+For help installing, please see INSTALL.
+
+For help running, please see HELP.
+
+For sending to a custom mail host, simply create a file called
+    modestmail.conf
+in the application directory, and add this line to the file somewhere
+    HOST = www.example.com
+replacing www.example.com with the desired mail host.
+Note: this file will be automatically created when you first run the
+application.
+
+===============================================================================
+CONTENTS OF MODESTMAIL BUNDLE 10/23/2010
+-------------------------------------------------------------------------------
+
+Documentation:
+--------------
+
+README              - This file
+INSTALL             - Directions to build the ModestMail program
+HELP                - Directions to get started using the program
+COPYING             - License information
+
+docs/
+  BreakDown         - Work Breakdown Structure of project
+  Design            - Outline of modules of the project
+  WTFsPerMinute     - Casual discussion of choices made with the code
+
+ModestMail Source Files:
+------------------------
+
+Makefile            - GNU Makefile for building ModestMail program
+main.cc             - Entry point for the program
+mailsender.hh       - Interface provided by instructor, abstract base class
+mailsender.cc       - Obligatory source file to create object of base class
+sendit.hh           - Class that inherits MailSender, and does the work of 
+                      parsing a file and sending it as an email
+sendit.cc           - Implementation file for SendIt
+
+Test Cases:
+-----------
+
+test-CATacct.txt    - Send to thatguy@cat.pdx.edu with correct formatting
+test-gmail.txt      - Send to miller.time.baby@gmail.com with correct formatting
+test-hotmail.txt    - Send to skater2984@msn.com with correct formatting
+test-badformat.txt  - Mail file which is not formatted per RFC822
+test-bademail.txt   - Mail file with correct layout, but invalid email address
+test-badserv.txt    - Mail file with non-existant mail server in To field
