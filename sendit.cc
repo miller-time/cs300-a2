@@ -40,9 +40,9 @@ string SendIt::read_and_write(int sd, string &msg) {
     if (bytes_sent != msg.length()) {
         cout << "Warning: Message not fully transmitted.\n";
     }
-    read(sd, buf, 999);
-    buf[3] = '\0';      // force-shorted response to 3 digits
-    cout << buf << endl;
+    bytes_sent = read(sd, buf, 999);
+    // Make sure the rest of the array doesn't spill junk.
+    buf[bytes_sent] = '\0';
     return (string(buf));
 }
 
@@ -96,13 +96,16 @@ int SendIt::send(string &host_to,
     string smtp_msg("HELO ");
     smtp_msg += host_to + "\r\n";
     // Use utility function to contact server
-    string response = read_and_write(socket_descriptor, smtp_msg);
+    string long_response = read_and_write(socket_descriptor, smtp_msg);
+    string short_response = long_response.substr(0,3);
     // Do not continue if server closed connection
-    if (response.compare("220") != 0) {
-        cerr << "Server closed connection\n";
+    if (short_response.compare("220") != 0) {
+        cerr << long_response;
         close(socket_descriptor);
         freeaddrinfo(host_addrinfo);
         return 1;
+    } else {
+        cout << "OK.\n";
     }
 
 
@@ -110,13 +113,16 @@ int SendIt::send(string &host_to,
     smtp_msg = "MAIL FROM:<";
     smtp_msg += envelope_from + ">\r\n";
     // Use utility function to contact server
-    response = read_and_write(socket_descriptor, smtp_msg);
+    long_response = read_and_write(socket_descriptor, smtp_msg);
+    short_response = long_response.substr(0,3);
     // Do not continue if server closed connection
-    if (response.compare("250") != 0) {
-        cerr << "Server closed connection\n";
+    if (short_response.compare("250") != 0) {
+        cerr << long_response;
         close(socket_descriptor);
         freeaddrinfo(host_addrinfo);
         return 1;
+    } else {
+        cout << "OK.\n";
     }
 
 
@@ -124,46 +130,55 @@ int SendIt::send(string &host_to,
     smtp_msg = "RCPT TO:<";
     smtp_msg += envelope_to + ">\r\n";
     // Use utility function to contact server
-    response = read_and_write(socket_descriptor, smtp_msg);
+    long_response = read_and_write(socket_descriptor, smtp_msg);
+    short_response = long_response.substr(0,3);
     // Do not continue if server closed connection
-    if (response.compare("250") != 0) {
-        cerr << "Server closed connection\n";
+    if (short_response.compare("250") != 0) {
+        cerr << long_response;
         close(socket_descriptor);
         freeaddrinfo(host_addrinfo);
         return 1;
+    } else {
+        cout << "OK.\n";
     }
 
 
     // Set DATA message
     smtp_msg = "DATA\r\n";
     // Use utility function to contact server
-    response = read_and_write(socket_descriptor, smtp_msg);
+    long_response = read_and_write(socket_descriptor, smtp_msg);
+    short_response = long_response.substr(0,3);
     // Do not continue if server closed connection
-    if (response.compare("354") != 0) {
-        cerr << "Server closed connection\n";
+    if (short_response.compare("354") != 0) {
+        cerr << long_response;
         close(socket_descriptor);
         freeaddrinfo(host_addrinfo);
         return 1;
+    } else {
+        cout << "OK.\n";
     }
 
 
     // Set actual message
     smtp_msg = Message + "\r\n.\r\n";
     // Use utility function to contact server
-    response = read_and_write(socket_descriptor, smtp_msg);
+    long_response = read_and_write(socket_descriptor, smtp_msg);
+    short_response = long_response.substr(0,3);
     // Do not continue if server closed connection
-    if (response.compare("250") != 0) {
-        cerr << "Server closed connection\n";
+    if (short_response.compare("250") != 0) {
+        cerr << long_response;
         close(socket_descriptor);
         freeaddrinfo(host_addrinfo);
         return 1;
+    } else {
+        cout << "OK.\n";
     }
 
 
     // Set QUIT message
     smtp_msg = "QUIT\r\n";
     // Use utility function to contact server
-    response = read_and_write(socket_descriptor, smtp_msg);
+    read_and_write(socket_descriptor, smtp_msg);
 
     // free the linked list of server info
     close(socket_descriptor);
@@ -277,7 +292,7 @@ int SendIt::parse_file() {
         cout << "File " << EmailFile << " not found.\n";
         return 1;
     }
-    cout << "Opening file: " << EmailFile << endl;
+    cout << "Opening file " << EmailFile << endl;
     // variable for reading each line of data from file
     while (getline(fin, line) != 0) {
         // SendIt's data member building up its data line by line
