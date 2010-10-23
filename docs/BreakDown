@@ -25,10 +25,14 @@ Work Breakdown Structure v0.2
 
 6- Design wrapper functions and other classes - 1 hour
         --main function that initiates the parse/send took about 20 minutes
+        --added error checking and sanitizing of email addresses - 1 hour
+        --many private functions created to minimize repeated code - 2 hours
+        --added config file functionality for shift in requirements - 2 hours
 
 7- Develop test cases and typescript them - 1 hour
+        --i don't think i need to typescript..
 
 8- Double check all requirements, inspect code - 1 hour
 
         Total Expected Time: 12.5 hours
-        Total Actual Time:   6 hours
+        Total Actual Time:   10.5 hours
