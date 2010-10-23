@@ -62,6 +62,7 @@ int SendIt::send(string &host_to,
 {
     int socket_descriptor;
     int status;
+    // DO NOT JUST PASS NULL TO GETADDRINFO FILL THE STRUCT
     addrinfo *host_addrinfo;
     // Make the call to fill the addrinfo struct
     if ((status = getaddrinfo(host_to.c_str(), "25", NULL, &host_addrinfo)) != 0) {
@@ -177,6 +178,7 @@ string SendIt::find_addr(string &msg, string target) {
     // Also make sure valid address
     size_t at_symbol;
     at_symbol = result.find("@");
+    // make sure find calls were all successful
     if (start_address != string::npos &&
         address_length != string::npos &&
         at_symbol != string::npos)
@@ -204,6 +206,10 @@ void SendIt::sanitize_addr(string &address) {
     while ((checker = address.find("\t")) != string::npos) {
         address.erase(checker);
     }
+    // This is for any dangling newline characters
+    if ((checker = address.find("\n")) != string::npos) {
+        address.erase(checker);
+    }
     // This looks for a semicolon and deletes everything after it.
     if ((checker = address.find(";")) != string::npos) {
         address = address.substr((size_t)0, checker);
@@ -217,14 +223,55 @@ void SendIt::sanitize_addr(string &address) {
 // as well as storing the message as a string into data members.
 int SendIt::parse_file() {
     // variables that will be passed to send_message()
-    string host("mailhost.cecs.pdx.edu"); // MOVE TO CONFIG FILE <----------
-    string env_from, env_to;
-    // stream variable for opening email file
-    ifstream fin;
+    string host, env_from, env_to;
+    string conf_filename("modestmail.conf");
+    string line;
+    // stream variable for opening config file
+    ifstream config_file(conf_filename.c_str(), ifstream::in);
+    // Check if config file exists
+    if (config_file) {
+        // It does exist, so open it.
+        cout << "Opening " << conf_filename << endl;
+        config_file.open(conf_filename.c_str());
+        string conf;
+        // read contents of config file
+        while (getline(config_file, line) != 0) {
+            conf += line + "\n";
+            cout << line << endl;
+        }
+        config_file.close();
+        // Look for host in the config file
+        size_t finder;
+        if ((finder = conf.find("HOST = ")) != string::npos) {
+            // value was found. get the host, sanitize it
+            host = conf.substr(finder + 7);
+            sanitize_addr(host);
+        } else {
+            // Exit, config file is corrupt.
+            cout << "HOST not found in current "
+                 << conf_filename << " file.\n";
+            return 1;
+        }
+    } else {
+        // Config file doesn't exist. So using default host and
+        // creating a config file containing it.
+        cout << "Creating file modestmail.conf...\n";
+        ofstream making_conf_file(conf_filename.c_str());
+        making_conf_file.open(conf_filename.c_str());
+        host = "mailhost.cecs.pdx.edu";
+        making_conf_file << "HOST = " << host;
+        making_conf_file.close();
+    }
+
+    // New stream variable for opening email file
+    ifstream fin(EmailFile.c_str());
+    if (!fin) {
+        cout << "File " << EmailFile << " not found.\n";
+        return 1;
+    }
     cout << "Opening file: " << EmailFile << endl;
     fin.open(EmailFile.c_str());
     // variable for reading each line of data from file
-    string line;
     while (getline(fin, line) != 0) {
         // SendIt's data member building up its data line by line
         // Check for lone "." to make sure message isn't cut off early
@@ -232,7 +279,7 @@ int SendIt::parse_file() {
             line += ".";
         Message += line += "\n";
     }
-    fin.close(); // check return value                   <-------------------
+    fin.close();
 
     // Entire message file is now read. Need to search the
     // "Message" data member string for certain substrings.
@@ -258,8 +305,7 @@ int SendIt::parse_file() {
     sanitize_addr(env_from);
 
     // OK! Now we should have all the necessary pieces!
-    int sent;
-    if ((sent = send(host, env_from, env_to)) != 0) {
+    if (send(host, env_from, env_to) != 0) {
         cerr << "Error sending message. Please try again.\n";
         return 1;
     }

@@ -7,7 +7,7 @@
 OBJS = main.o mailsender.o sendit.o
 FILES = main.cc mailsender.cc sendit.cc
 CC = g++
-FLAGS = -c -Wall
+FLAGS = -c -Wall -g
 
 all : modestmail
 
