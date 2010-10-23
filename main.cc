@@ -36,13 +36,13 @@ void parse_arg(char* arg) {
     if (help.compare(arg) == 0)
     {
         // print the help file
-        fin.open("HELP"); //check return value <---------------
+        fin.open("HELP");
         string help_contents;
         while (getline(fin, help_contents) != 0) {
             // check for return -1  <-------------------------
             cout << help_contents << endl;
         }
-        fin.close();    // check return value <---------------
+        fin.close();
     } else {
         // create SendIt object with specified filename
         string filename (arg);

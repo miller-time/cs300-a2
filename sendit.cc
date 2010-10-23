@@ -231,13 +231,10 @@ int SendIt::parse_file() {
     // Check if config file exists
     if (config_file) {
         // It does exist, so open it.
-        cout << "Opening " << conf_filename << endl;
-        config_file.open(conf_filename.c_str());
         string conf;
         // read contents of config file
         while (getline(config_file, line) != 0) {
             conf += line + "\n";
-            cout << line << endl;
         }
         config_file.close();
         // Look for host in the config file
@@ -257,7 +254,6 @@ int SendIt::parse_file() {
         // creating a config file containing it.
         cout << "Creating file modestmail.conf...\n";
         ofstream making_conf_file(conf_filename.c_str());
-        making_conf_file.open(conf_filename.c_str());
         host = "mailhost.cecs.pdx.edu";
         making_conf_file << "HOST = " << host;
         making_conf_file.close();
@@ -270,7 +266,6 @@ int SendIt::parse_file() {
         return 1;
     }
     cout << "Opening file: " << EmailFile << endl;
-    fin.open(EmailFile.c_str());
     // variable for reading each line of data from file
     while (getline(fin, line) != 0) {
         // SendIt's data member building up its data line by line
