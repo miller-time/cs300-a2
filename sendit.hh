@@ -19,6 +19,8 @@ public:
 
     // constructor
     SendIt(string &filename);
+    // destructor
+    virtual ~SendIt();
 
     // public functions
     int parse_file();

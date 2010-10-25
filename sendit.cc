@@ -28,6 +28,10 @@ SendIt::SendIt(string &filename):MailSender(filename) {
     EmailFile = filename;
 }
 
+// DESTRUCTOR
+SendIt::~SendIt() {
+}
+
 // READ_AND_WRITE
 // This function makes the repeated calls to read() and
 // write() and returns the 3-digit response.

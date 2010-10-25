@@ -5,9 +5,13 @@ http://opensource.org/licenses/mit-license.php
 
 INSTALL
 
-To build and use ModestMail type the following command:
+To build and use ModestMail on Linux type the following command:
 
     make
+
+On Solaris it would be:
+
+    make -f Makefile.solaris
 
 That compiles the program into the executable modestmail. Then you can type:
 
