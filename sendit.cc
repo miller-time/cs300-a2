@@ -42,7 +42,7 @@ string SendIt::read_and_write(int sd, string &msg) {
     bytes_sent = write(sd, msg.c_str(), msg.length());
     // warn about bytes_sent mismatch
     if (bytes_sent != msg.length()) {
-        cout << "Warning: Message not fully transmitted.\n";
+        cerr << "Warning: Message not fully transmitted.\n";
     }
     bytes_sent = read(sd, buf, 999);
     // Make sure the rest of the array doesn't spill junk.
@@ -278,7 +278,7 @@ int SendIt::parse_file() {
             sanitize_addr(host);
         } else {
             // Exit, config file is corrupt.
-            cout << "HOST not found in current "
+            cerr << "HOST not found in current "
                  << conf_filename << " file.\n";
             return 1;
         }
@@ -295,7 +295,7 @@ int SendIt::parse_file() {
     // New stream variable for opening email file
     ifstream fin(EmailFile.c_str());
     if (!fin) {
-        cout << "File " << EmailFile << " not found.\n";
+        cerr << "File " << EmailFile << " not found.\n";
         return 1;
     }
     cout << "Opening file " << EmailFile << endl;
@@ -316,7 +316,7 @@ int SendIt::parse_file() {
     env_to = find_addr(Message, "To: ");
     // Check for error from find
     if (env_to.empty() == true) {
-        cout << "No valid To email address found.\n";
+        cerr << "No valid To email address found.\n";
         return 1;
     }
     // Use utility function to clean it up.
@@ -326,7 +326,7 @@ int SendIt::parse_file() {
     env_from = find_addr(Message, "From: ");
     // Check for error
     if (env_from.empty() == true) {
-        cout << "No valid From email address found.\n";
+        cerr << "No valid From email address found.\n";
         return 1;
     }
     // Use utility function to clean it up.

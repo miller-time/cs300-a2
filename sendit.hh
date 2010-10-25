@@ -3,12 +3,12 @@
 // COPYING or visit
 // http://opensource.org/licenses/mit-license.php
 
+#ifndef _WF_SENDIT_HH
+#define _WF_SENDIT_HH
+
 // sendit.hh
 // This is the class that will send the email message.
 // $Header$
-
-#ifndef SENDIT_H
-#define SENDIT_
 
 #include "mailsender.hh"
 
