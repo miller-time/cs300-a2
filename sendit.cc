@@ -18,6 +18,7 @@
 #include <netdb.h>
 #include "mailsender.hh"
 #include "sendit.hh"
+
 using std::cout;
 using std::endl;
 
@@ -81,7 +82,7 @@ int SendIt::send(string &host_to,
     // Make the call to fill the addrinfo struct
     if ((status = getaddrinfo(host_to.c_str(), "25", &hints, &host_addrinfo)) != 0) {
         cerr << gai_strerror(status) << endl;
-        return 1;
+        return -1;
     }
     // Get the socket descriptor
     socket_descriptor = socket(host_addrinfo->ai_family,
@@ -107,15 +108,15 @@ int SendIt::send(string &host_to,
         cerr << long_response;
         close(socket_descriptor);
         freeaddrinfo(host_addrinfo);
-        return 1;
+        return -1;
     } else {
         cout << "OK.\n";
     }
 
 
     // Set MAIL FROM message
-    smtp_msg = "MAIL FROM:<";
-    smtp_msg += envelope_from + ">\r\n";
+    smtp_msg = "MAIL FROM:";
+    smtp_msg += envelope_from + "\r\n";
     // Use utility function to contact server
     long_response = read_and_write(socket_descriptor, smtp_msg);
     short_response = long_response.substr(0,3);
@@ -124,15 +125,15 @@ int SendIt::send(string &host_to,
         cerr << long_response;
         close(socket_descriptor);
         freeaddrinfo(host_addrinfo);
-        return 1;
+        return -1;
     } else {
         cout << "OK.\n";
     }
 
 
     // Set RCPT TO message
-    smtp_msg = "RCPT TO:<";
-    smtp_msg += envelope_to + ">\r\n";
+    smtp_msg = "RCPT TO:";
+    smtp_msg += envelope_to + "\r\n";
     // Use utility function to contact server
     long_response = read_and_write(socket_descriptor, smtp_msg);
     short_response = long_response.substr(0,3);
@@ -141,7 +142,7 @@ int SendIt::send(string &host_to,
         cerr << long_response;
         close(socket_descriptor);
         freeaddrinfo(host_addrinfo);
-        return 1;
+        return -1;
     } else {
         cout << "OK.\n";
     }
@@ -157,7 +158,7 @@ int SendIt::send(string &host_to,
         cerr << long_response;
         close(socket_descriptor);
         freeaddrinfo(host_addrinfo);
-        return 1;
+        return -1;
     } else {
         cout << "OK.\n";
     }
@@ -173,7 +174,7 @@ int SendIt::send(string &host_to,
         cerr << long_response;
         close(socket_descriptor);
         freeaddrinfo(host_addrinfo);
-        return 1;
+        return -1;
     } else {
         cout << "OK.\n";
     }
@@ -280,7 +281,7 @@ int SendIt::parse_file() {
             // Exit, config file is corrupt.
             cerr << "HOST not found in current "
                  << conf_filename << " file.\n";
-            return 1;
+            return -1;
         }
     } else {
         // Config file doesn't exist. So using default host and
@@ -317,7 +318,7 @@ int SendIt::parse_file() {
     // Check for error from find
     if (env_to.empty() == true) {
         cerr << "No valid To email address found.\n";
-        return 1;
+        return -1;
     }
     // Use utility function to clean it up.
     sanitize_addr(env_to);
@@ -327,7 +328,7 @@ int SendIt::parse_file() {
     // Check for error
     if (env_from.empty() == true) {
         cerr << "No valid From email address found.\n";
-        return 1;
+        return -1;
     }
     // Use utility function to clean it up.
     sanitize_addr(env_from);
@@ -335,7 +336,7 @@ int SendIt::parse_file() {
     // OK! Now we should have all the necessary pieces!
     if (send(host, env_from, env_to) != 0) {
         cerr << "Error sending message. Please try again.\n";
-        return 1;
+        return -1;
     }
     return 0;
 }

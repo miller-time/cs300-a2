@@ -3,12 +3,13 @@
 // COPYING or visit
 // http://opensource.org/licenses/mit-license.php
 
+#ifndef _WF_MAILSENDER_HH
+#define _WF_MAILSENDER_HH
+
 // mailsender.hh
 // This is the class that will send the email message.
 // $Header$
 
-#ifndef MAILSENDER_H
-#define MAILSENDER_H
 
 #include <string>
 

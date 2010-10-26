@@ -12,6 +12,7 @@
 #include <string>
 #include <fstream>
 #include "sendit.hh"
+
 using namespace std;
 
 
@@ -54,6 +55,12 @@ void parse_arg(char* arg) {
 // MAIN
 // Simply check that the user has supplied one argument on the
 // command line and use PARSE_ARG to inspect it.
+// PARSE_ARG will then either print the help statement or create
+// a SENDIT object and attempt to deliver an email.
+// This process begins with the PARSE_FILE function in the SENDIT
+// class, where envelope information is gathered from the file
+// specified on the command line, and the file is delivered over
+// a TCP socket.
 int main (int argc, char **argv) {
     if (argc != 2) {
         missing_operand();

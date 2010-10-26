@@ -28,13 +28,11 @@ public:
                      string &envelope_from,
                      string &envelope_to);
 
-protected:
+private:
 
     // data members
     string EmailFile;   // name of file
     string Message;     // message contents
-
-private:
 
     // utility functions
     string read_and_write(int, string &);
