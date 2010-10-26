@@ -243,7 +243,7 @@ void SendIt::sanitize_addr(string &address) {
     // This removes parenthesised comments
     size_t leftpar, rightpar;
     while ((leftpar = address.find("(")) != string::npos &&
-           (rightpar = address.find(")")) != string::npos) {
+           (rightpar = address.find_last_of(')')) != string::npos) {
         address = address.erase(leftpar + 1, rightpar - leftpar);
     }
 }

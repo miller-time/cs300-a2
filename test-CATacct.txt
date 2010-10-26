@@ -1,5 +1,5 @@
 From: rtmiller@pdx.edu   
-To: thatguy@mailhost.cecs.pdx.edu  (comment here) 
+To: thatguy@mailhost.cecs.pdx.edu  ((nested comment here)  this is ridiculous commenting)    
 Date: Fri Oct 15 12:08:59 PDT 2010
 Subject: test
 
