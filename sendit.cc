@@ -61,7 +61,7 @@ string SendIt::read_and_write(int sd, string &msg) {
 // Data members will already be set by parse_file before this
 // function is called, which will be used in the commands sent
 // to the server.
-// Anywhere there is a return 1 means the communication stopped
+// Anywhere there is a return -1 means the communication stopped
 // before the conversation with the SMTP server completed.
 int SendIt::send(string &host_to,
                  string &envelope_from,
@@ -85,16 +85,23 @@ int SendIt::send(string &host_to,
         return -1;
     }
     // Get the socket descriptor
-    socket_descriptor = socket(host_addrinfo->ai_family,
-                               host_addrinfo->ai_socktype,
-                               host_addrinfo->ai_protocol);
+    if (socket_descriptor = socket(host_addrinfo->ai_family,
+                                   host_addrinfo->ai_socktype,
+                                   host_addrinfo->ai_protocol) == -1)
+    {
+        cerr << "Socket error.\n";
+        return -1;
+    }
     // Connect to the socket
-    connect(socket_descriptor, host_addrinfo->ai_addr, host_addrinfo->ai_addrlen);
+    if (connect(socket_descriptor, host_addrinfo->ai_addr, host_addrinfo->ai_addrlen) == -1) {
+        cerr << "Connect error.\n";
+        return -1;
+    }
 
 
-    // socket ready to connect, now need to begin communicating with
+    // socket connected, now need to begin communicating with
     // the SMTP server. this happens through several individual
-    // sends and receives.
+    // writes and reads.
 
 
     // Initialize HELO message
