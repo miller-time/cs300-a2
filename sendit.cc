@@ -85,9 +85,9 @@ int SendIt::send(string &host_to,
         return -1;
     }
     // Get the socket descriptor
-    if (socket_descriptor = socket(host_addrinfo->ai_family,
+    if ((socket_descriptor = socket(host_addrinfo->ai_family,
                                    host_addrinfo->ai_socktype,
-                                   host_addrinfo->ai_protocol) == -1)
+                                   host_addrinfo->ai_protocol)) == -1)
     {
         cerr << "Socket error.\n";
         return -1;
