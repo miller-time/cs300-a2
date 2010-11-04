@@ -237,15 +237,15 @@ void SendIt::sanitize_addr(string &address) {
     size_t checker;
     // This loop repeatedly deletes any spaces detected
     while ((checker = address.find(" ")) != string::npos) {
-        address.erase(checker, sizeof(" "));
+        address.erase(checker, (size_t)1);
     }
     // This loop does the same thing for tabs
     while ((checker = address.find("\t")) != string::npos) {
-        address.erase(checker, sizeof("\t"));
+        address.erase(checker, (size_t)1);
     }
     // This is for any dangling newline characters
     if ((checker = address.find("\n")) != string::npos) {
-        address.erase(checker, sizeof("\n"));
+        address.erase(checker, (size_t)1);
     }
     // This removes parenthesised comments
     size_t leftpar, rightpar;
