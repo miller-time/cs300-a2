@@ -237,15 +237,15 @@ void SendIt::sanitize_addr(string &address) {
     size_t checker;
     // This loop repeatedly deletes any spaces detected
     while ((checker = address.find(" ")) != string::npos) {
-        address.erase(checker);
+        address.erase(checker, sizeof(" "));
     }
     // This loop does the same thing for tabs
     while ((checker = address.find("\t")) != string::npos) {
-        address.erase(checker);
+        address.erase(checker, sizeof("\t"));
     }
     // This is for any dangling newline characters
     if ((checker = address.find("\n")) != string::npos) {
-        address.erase(checker);
+        address.erase(checker, sizeof("\n"));
     }
     // This removes parenthesised comments
     size_t leftpar, rightpar;
@@ -329,6 +329,7 @@ int SendIt::parse_file() {
     }
     // Use utility function to clean it up.
     sanitize_addr(env_to);
+    cout << "to, sanitized: " << env_to << endl;
 
     // Use utility function to extract from address
     env_from = find_addr(Message, "From: ");
